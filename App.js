@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Image, StyleSheet, Alert } from 'react-native';
+import { View, Button, Image, StyleSheet, Alert, Linking } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import axios from 'axios';
 
@@ -36,10 +36,23 @@ const App = () => {
       });
 
       setProcessedImage(response.data.image_url);
+
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to remove background');
     }
+  };
+
+  const openImageInBrowser = () => {
+    if (!processedImage) {
+      Alert.alert('No processed image', 'Please process an image first');
+      return;
+    }
+
+    Linking.openURL(processedImage).catch((err) => {
+      console.error(err);
+      Alert.alert('Error', 'Failed to open the image in browser');
+    });
   };
 
   return (
@@ -50,7 +63,10 @@ const App = () => {
       )}
       <Button title="Remove Background" onPress={removeBackground} />
       {processedImage && (
-        <Image source={{ uri: processedImage }} style={styles.image} />
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: processedImage }} style={styles.image} />
+          <Button title="Download Image" onPress={openImageInBrowser} />
+        </View>
       )}
     </View>
   );
@@ -61,11 +77,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginTop: 20,
   },
   image: {
     width: 200,
     height: 200,
-    marginTop: 20,
+    marginBottom: 10,
   },
 });
 
