@@ -44,7 +44,7 @@ const App = () => {
 
     try {
       const response = await axios.post(
-        'https://back-remover.onrender.com',
+        'https://back-remover.onrender.com/remove-bg',
         formData,
         {
           headers: {
