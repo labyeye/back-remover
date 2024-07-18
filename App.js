@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
-import { View, Button, Image, StyleSheet, Alert, Linking } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Alert,
+  Linking,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const { width, height } = Dimensions.get('window');
 
 const App = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [processedImage, setProcessedImage] = useState(null);
 
   const selectImage = () => {
-    launchImageLibrary({}, (response) => {
+    launchImageLibrary({}, response => {
       if (response.assets && response.assets.length > 0) {
         setSelectedImage(response.assets[0]);
       }
@@ -29,14 +42,17 @@ const App = () => {
     });
 
     try {
-      const response = await axios.post('http://localhost:5001/remove-bg', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        'http://localhost:5001/remove-bg',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
 
       setProcessedImage(response.data.image_url);
-
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to remove background');
@@ -49,44 +65,79 @@ const App = () => {
       return;
     }
 
-    Linking.openURL(processedImage).catch((err) => {
+    Linking.openURL(processedImage).catch(err => {
       console.error(err);
       Alert.alert('Error', 'Failed to open the image in browser');
     });
   };
 
   return (
-    <View style={styles.container}>
-      <Button title="Select Image" onPress={selectImage} />
-      {selectedImage && (
-        <Image source={{ uri: selectedImage.uri }} style={styles.image} />
-      )}
-      <Button title="Remove Background" onPress={removeBackground} />
-      {processedImage && (
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: processedImage }} style={styles.image} />
-          <Button title="Download Image" onPress={openImageInBrowser} />
-        </View>
-      )}
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <TouchableOpacity style={styles.select} onPress={selectImage}>
+          <Text style={styles.buttonText}>Select Image</Text>
+        </TouchableOpacity>
+        {selectedImage && (
+          <Image source={{ uri: selectedImage.uri }} style={styles.image} />
+        )}
+        <TouchableOpacity style={styles.select} onPress={removeBackground}>
+          <Text style={styles.buttonText}>Remove Background</Text>
+        </TouchableOpacity>
+        {processedImage && (
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: processedImage }} style={styles.image} />
+            <TouchableOpacity
+              style={styles.downloadButton}
+              onPress={openImageInBrowser}>
+              <Text style={styles.buttonText}>Download Image</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#071952',
+  },
+  container: {
+    flexGrow: 1,
     alignItems: 'center',
     padding: 20,
+  },
+  select: {
+    height: 50,
+    width: width * 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0B666A',
+    borderRadius: 25,
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#97FEED',
+    fontSize: 18,
   },
   imageContainer: {
     alignItems: 'center',
     marginTop: 20,
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 10,
+    width: width * 0.8,
+    height: width * 0.8,
+    marginVertical: 20,
+  },
+  downloadButton: {
+    height: 50,
+    width: width * 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0B666A',
+    borderRadius: 25,
+    marginVertical: 10,
   },
 });
 

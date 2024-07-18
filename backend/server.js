@@ -4,6 +4,7 @@ const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
 const path = require('path');
+require('dotenv').config(); // Add this line to load environment variables
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -18,7 +19,7 @@ app.post('/remove-bg', upload.single('image_file'), async (req, res) => {
     const response = await axios.post('https://api.remove.bg/v1.0/removebg', formData, {
       headers: {
         ...formData.getHeaders(),
-        'X-Api-Key': 'K4NDvHm8K9x9s3jRL1UvwDnf',
+        'X-Api-Key': process.env.REMOVE_BG_KEY, // Use environment variable here
       },
       responseType: 'arraybuffer',
     });
@@ -42,4 +43,3 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
