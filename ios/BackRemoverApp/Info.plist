@@ -8,6 +8,8 @@
 	<string>We need your permission to save photos to your photo library.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-6119758783032593~4684667965</string>
 	<key>CFBundleDisplayName</key>
 	<string>Back Remover Pro</string>
 	<key>CFBundleExecutable</key>

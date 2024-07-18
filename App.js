@@ -98,12 +98,12 @@ const App = () => {
               </TouchableOpacity>
             </View>
           )}
+          
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
+  
   buttonText: {
     color: '#093086',
     fontSize: 18,
