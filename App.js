@@ -19,6 +19,7 @@ const { width, height } = Dimensions.get('window');
 const App = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [processedImage, setProcessedImage] = useState(null);
+  
 
   const selectImage = () => {
     launchImageLibrary({}, response => {
@@ -43,7 +44,7 @@ const App = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5001/remove-bg',
+        'https://back-remover.onrender.com',
         formData,
         {
           headers: {

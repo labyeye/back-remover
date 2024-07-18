@@ -6,6 +6,11 @@ const FormData = require('form-data');
 const path = require('path');
 require('dotenv').config(); // Add this line to load environment variables
 
+const cors = require('cors');
+
+app.use(cors());
+
+
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
